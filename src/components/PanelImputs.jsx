@@ -8,11 +8,8 @@ function PanelImputs(props) {
     putInHistory,
     toggleInput,
     output,
-    unitInput,
-    unitOutput,
     input,
-    factor,
-    option,
+    params,
   } = props;
 
   return (
@@ -24,10 +21,10 @@ function PanelImputs(props) {
             id="options"
             className="panel__inputs-input"
             onChange={handleOptionChange}
-            value={option}
+            value={params.option}
           >
-            <option value="1">Km → miles</option>
-            <option value="2">miles → Km</option>
+            <option value="1">km → miles</option>
+            <option value="2">miles → km</option>
             <option value="3">metres → feet</option>
             <option value="4">feet → metres</option>
             <option value="5">cm → inches</option>
@@ -40,10 +37,7 @@ function PanelImputs(props) {
               toggleInput({
                 input,
                 output,
-                unitInput,
-                unitOutput,
-                option,
-                factor,
+                params,
               })
             }
           >
@@ -60,18 +54,12 @@ function PanelImputs(props) {
             value={input}
           />
           <label htmlFor="inputValue" className="panel__inputs-label">
-            {unitInput}
+            {params.unitInput}
           </label>
         </div>
         <div className="panel__output">
-          <span
-            onClick={() =>
-              putInHistory({ input, output, unitInput, unitOutput })
-            }
-          >
-            ❤
-          </span>
-          <p>{`${output || ""} ${input !== "" ? unitOutput : ""}`}</p>
+          <span onClick={() => putInHistory({ input, output, params })}>❤</span>
+          <p>{`${output || ""} ${input !== "" ? params.unitOutput : ""}`}</p>
         </div>
       </div>
     </>
@@ -79,4 +67,3 @@ function PanelImputs(props) {
 }
 
 export default PanelImputs;
-// ❤ 🤍

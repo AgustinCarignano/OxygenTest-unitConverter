@@ -11,7 +11,8 @@ function PanelHistory(props) {
           return (
             <div key={index} className="history">
               <p className="history__items">
-                {item.input} {item.unitInput} → {item.output} {item.unitOutput}{" "}
+                {item.input} {item.params.unitInput} → {item.output}{" "}
+                {item.params.unitOutput}
               </p>
               <span onClick={() => deleteItem(index)}>×</span>
             </div>
