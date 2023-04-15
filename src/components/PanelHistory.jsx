@@ -6,15 +6,14 @@ function PanelHistory(props) {
     <>
       <h3 className="savedTitle">Saved</h3>
       <div className="historyContainer">
-        {history.map((item) => {
-          let index = history.findIndex((el) => el === item);
+        {history.map((item, index) => {
           return (
             <div key={index} className="history">
               <p className="history__items">
                 {item.input} {item.params.unitInput} → {item.output}{" "}
                 {item.params.unitOutput}
               </p>
-              <span onClick={() => deleteItem(index)}>×</span>
+              <span onClick={() => deleteItem(item._id)}>×</span>
             </div>
           );
         })}

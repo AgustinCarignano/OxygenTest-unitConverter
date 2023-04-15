@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { optionParams } from "./optionParams.js";
 import "./styles.css";
@@ -7,34 +7,31 @@ import PanelHistory from "./PanelHistory";
 
 function Panel() {
   const [output, setOutput] = useState(null); //Valor de salida o resultado
-  const [input, setInput] = useState(""); //Valor de entrada a convertir
+  const [input, setInput] = useState(null); //Valor de entrada a convertir
   const [params, setParams] = useState(optionParams[0]); //parametros para la conversión (unidades y factor)
-  const [history, setHistory] = useState(
-    JSON.parse(localStorage.getItem("history")) || []
-  ); //Array que almacena los resultados seleccionados.
+  const [history, setHistory] = useState([]); //Array que almacena los resultados seleccionados.
 
   //Actualiza el valor del input a medida que el usuario lo va ingresando
   function handleChange(e) {
-    setInput(e.target.value === "" ? "" : parseFloat(e.target.value));
+    setInput(e.target.value === "" ? null : parseFloat(e.target.value));
   }
 
   //Actualiza el valor de salida (resultado) a medida que el ususario va ingresando el valor
   function handleOnKeyUp(e) {
     const input = e.target.value;
-    setOutput(Math.round(input * params.factor * 100) / 100);
+    setOutput((input * params.factor).toFixed(2));
   }
 
   //Se observa el tipo de conversión que se quiere realizar y se setean los parámetros correspondientes.
   function handleOptionChange(e) {
     let optionSelected = parseInt(e.target.value);
-    setInput("");
-    setOutput("");
+    setInput(null);
+    setOutput(null);
     setNewParams(optionSelected);
   }
 
   //Se recibe como parámetro los valores del ultimo resultado de la conversión y los invierte, seteando nuevamente los parámetros
   function toggleInput(data) {
-    console.log(data.params.option);
     let optionFactor = data.params.option % 2 === 0 ? -1 : +1;
     let newOption = data.params.option + optionFactor;
     setInput(data.output);
@@ -43,23 +40,28 @@ function Panel() {
   }
 
   //Recibe por parámetro la información del último resultado para guardarlo en un array que conforma el historial.
-  function putInHistory(result) {
-    const historyCopy = [...history];
-    if (result.input && result.output) {
-      historyCopy.push(result);
-      saveHistory(historyCopy);
-      setHistory(historyCopy);
-      setInput("");
-      setOutput(null);
-    }
+  async function putInHistory(result) {
+    if (!input || !output) return;
+    const response = await fetch("http://localhost:8080/units", {
+      method: "POST",
+      body: JSON.stringify(result),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const newConvertion = await response.json();
+    setHistory([...history, newConvertion.convertion]);
+    setInput(null);
+    setOutput(null);
   }
 
   //Recibe por parámtetro el índice en el array "history" del resultado a eliminar y lo quita del mismo.
-  function deleteItem(index) {
-    const historyCopy = [...history];
-    historyCopy.splice(index, 1);
-    saveHistory(historyCopy);
-    setHistory(historyCopy);
+  async function deleteItem(id) {
+    await fetch(`http://localhost:8080/units/${id}`, {
+      method: "DELETE",
+    });
+    const newHistory = history.filter((item) => item._id !== id);
+    setHistory(newHistory);
   }
 
   //Setea los valores opción, unidad valor entrada, unidad valor salida y el factor de conversión., obteniendolos del objeto importado
@@ -67,10 +69,15 @@ function Panel() {
     setParams(optionParams[option - 1]);
   }
 
-  //Guarda el array "history" en la memoria local
-  function saveHistory(list) {
-    localStorage.setItem("history", JSON.stringify(list));
+  //Obtener el historual de conversiones de la base de datos
+  async function getHistory() {
+    const response = await fetch("http://localhost:8080/units");
+    const data = await response.json();
+    setHistory(data.convertions);
   }
+  useEffect(() => {
+    getHistory();
+  }, []);
 
   return (
     <div className="container">

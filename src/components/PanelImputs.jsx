@@ -51,7 +51,7 @@ function PanelImputs(props) {
             id="inputValue"
             onKeyUp={handleOnKeyUp}
             onChange={handleChange}
-            value={input}
+            value={input || ""}
           />
           <label htmlFor="inputValue" className="panel__inputs-label">
             {params.unitInput}
