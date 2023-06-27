@@ -2,7 +2,9 @@
 
 Mini-proyecto creado como parte de la prueba de nivel técnico de Oxygen.
 
-El objetivo fue desarrollar una aplicación en React a partir de un diseño creado y compartido en Figma, que pueda adaptarse a diferentes tamaños de pantalla, y que realice una series de operaciones específicadas de conversión de unidades y manejo de información en memoría local para lograr persistencia.
+El objetivo fue desarrollar una aplicación en React a partir de un diseño creado y compartido en Figma, que pueda adaptarse a diferentes tamaños de pantalla, que permite realizar conversion de unidades y que logra persistencia al alojar las conversiones elegidas en la memoria local.
+
+Este proyecto se encuentra desplegado en la nube de AWS
 
 ## Scripts disponibles
 
