@@ -13,7 +13,7 @@ function PanelHistory(props) {
                 {item.input} {item.params.unitInput} → {item.output}{" "}
                 {item.params.unitOutput}
               </p>
-              <span onClick={() => deleteItem(item._id)}>×</span>
+              <span onClick={() => deleteItem(index)}>×</span>
             </div>
           );
         })}

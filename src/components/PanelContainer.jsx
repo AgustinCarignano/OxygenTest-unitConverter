@@ -9,7 +9,9 @@ function Panel() {
   const [output, setOutput] = useState(null); //Valor de salida o resultado
   const [input, setInput] = useState(null); //Valor de entrada a convertir
   const [params, setParams] = useState(optionParams[0]); //parametros para la conversión (unidades y factor)
-  const [history, setHistory] = useState([]); //Array que almacena los resultados seleccionados.
+  const [history, setHistory] = useState(
+    JSON.parse(localStorage.getItem("history")) || []
+  ); //Array que almacena los resultados seleccionados.
 
   //Actualiza el valor del input a medida que el usuario lo va ingresando
   function handleChange(e) {
@@ -42,25 +44,15 @@ function Panel() {
   //Recibe por parámetro la información del último resultado para guardarlo en un array que conforma el historial.
   async function putInHistory(result) {
     if (!input || !output) return;
-    const response = await fetch("http://localhost:8080/units", {
-      method: "POST",
-      body: JSON.stringify(result),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const newConvertion = await response.json();
-    setHistory([...history, newConvertion.convertion]);
+    setHistory([...history, result]);
     setInput(null);
     setOutput(null);
   }
 
   //Recibe por parámtetro el índice en el array "history" del resultado a eliminar y lo quita del mismo.
-  async function deleteItem(id) {
-    await fetch(`http://localhost:8080/units/${id}`, {
-      method: "DELETE",
-    });
-    const newHistory = history.filter((item) => item._id !== id);
+  async function deleteItem(index) {
+    const newHistory = [...history];
+    newHistory.splice(index, 1);
     setHistory(newHistory);
   }
 
@@ -69,15 +61,13 @@ function Panel() {
     setParams(optionParams[option - 1]);
   }
 
-  //Obtener el historual de conversiones de la base de datos
-  async function getHistory() {
-    const response = await fetch("http://localhost:8080/units");
-    const data = await response.json();
-    setHistory(data.convertions);
+  function saveHistory(list) {
+    localStorage.setItem("history", JSON.stringify(list));
   }
+
   useEffect(() => {
-    getHistory();
-  }, []);
+    saveHistory(history);
+  }, [history]);
 
   return (
     <div className="container">
