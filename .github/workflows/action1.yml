@@ -17,4 +17,4 @@ jobs:
       - name: build project
         run: npm run build
       - name: aws deploy
-        run: BUILD_DIRECTORY=build BUCKET_NAME=unit-converter-oxygen AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} npm run deploy-aws
+        run: BUILD_DIRECTORY=build BUCKET_NAME=unit-convert-oxygen AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} npm run deploy-aws
